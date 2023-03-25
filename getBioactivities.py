@@ -10,6 +10,8 @@ from datetime import datetime
 # leemos el fichero y lo guardamos en la variable df
 df=pd.read_csv('file_with_cids.csv',sep=";")
 df_bioactivity=[]
+cids_with_error=[]
+cids_without_bioactivity=[]
 baseURL="https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=json&query={%22select%22:%22*%22,%22collection%22:%22bioactivity%22,%22where%22:{%22ands%22:[{%22cid%22:%22{cid}%22}]},%22start%22:{start},%22limit%22:10000}"
 
 def getBioactivitiesByCID(CID,start,limit,df_result):
@@ -22,25 +24,36 @@ def getBioactivitiesByCID(CID,start,limit,df_result):
             start=start+limit
             if(totalCount>0):
                 df_result.append(pd.DataFrame(response.json()["SDQOutputSet"][0]["rows"]))
-            if(totalCount>start):
-                getBioactivitiesByCID(CID,start,limit,df_result)
+                if(totalCount>start):
+                    getBioactivitiesByCID(CID,start,limit,df_result)
+            else:
+                cids_without_bioactivity.append(CID)
         else:
-            return np.NA
+            cids_with_error.append(CID)
     except:
+        cids_with_error.append(CID)
         if(response):
             print(f'API Resquest ERROR {response.status_code}')
-            getBioactivitiesByCID(CID,start,limit,df_result)
         else:
             response="Error while execution"
             print(f'API Resquest ERROR: {response}')
-            return np.NA
 
 def getBioactivities(CIDs,start,limit,df_result):
     for i in CIDs:
         getBioactivitiesByCID(i,start,limit,df_result)
     pd.concat(df_result).dropna(subset="targetname").to_csv("bioactivities_by_cid.csv", sep=';',index=False)
+    if(len(cids_with_error)>0):
+        getBioactivities(cids_with_error,start,limit,df_result)
+
+def checkbioactivity(CID, list_to_check):
+    if(CID in list_to_check):
+        return "yes"
+    else:
+        return "no"
 
 start_time = datetime.now()
 getBioactivities(df["cid"],1,1000,df_bioactivity)
+df["bioactivity"]=df.apply(lambda row:checkbioactivity(row["cid"], pd.unique(pd.concat(df_bioactivity).dropna(subset="targetname")["cid"])), axis = 1)
+df.to_csv("gut_comps_cids_bioactivity.csv", sep=';',index=False)
 end_time=datetime.now()
 print('Duration: {}'.format(end_time - start_time))
