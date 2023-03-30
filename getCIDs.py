@@ -46,7 +46,7 @@ def getCidByHMDBId(HMDBId):
     except:
         if(response):
             print(f'API Resquest ERROR {response.status_code}')
-            response = requests.get(url = altURL.replace("{registryID}",str(HMDBId)))
+            response = requests.get(url = altURL.replace("{registryID}", HMDBId))
             if(response.status_code==200):
                 return response.json()["IdentifierList"]["CID"][0]
             else:
@@ -56,18 +56,19 @@ def getCidByHMDBId(HMDBId):
             print(f'API Resquest ERROR: {response}')
             return np.NA
 # Comprobamos la existencia de valores NA o valores igual a cero
-def checkDataNA(dataframe, colname, requestColname, altRequestColname):
-    for i in range(0,len(dataframe[colname])):
-        if(np.isnan(dataframe[colname][i])):
-            dataframe[colname][i]=getCidByInchI(dataframe[requestColname][i])
-        if(dataframe[colname][i]==0):
-             dataframe[colname][i]=getCidByHMDBId(dataframe[altRequestColname][i])
+def checkDataNA(CID,inchi, HMDBID):
+    if(np.isnan(CID)):
+        return getCidByInchI(inchi)
+    elif(CID==0):
+        print(CID)
+        return getCidByHMDBId(HMDBID)
+    else:
+        return CID
 
 start_time = datetime.now()
 # Recorremos la columna inchi y realizamos a tanta peticiones a la api como valores hay en la columna
 df['cid'] = df.apply(lambda row:getCidByInchI(row['inchi']), axis = 1)
-checkDataNA(df,'cid','inchi','hmdb_id')
-# Guardamos el conjunto de datos en un fichero csv
+df['cid'] = df.apply(lambda row:checkDataNA(row['cid'], row['inchi'], row['hmdb_id']), axis = 1)
 df.to_csv("file_with_cids.csv", sep=';',index=False)
 end_time=datetime.now()
 print('Duration: {}'.format(end_time - start_time))
