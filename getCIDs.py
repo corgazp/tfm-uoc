@@ -12,9 +12,9 @@ df=pd.read_csv('gut_comps.csv',sep=";")
 baseURL="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/inchi/cids/JSON"
 # URL para conseguir CID a partir de HMDBID
 altURL="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/xref/RegistryID/{registryID}/cids/JSON"
-# Creamos la función getCidByInchI
-def getCidByInchI(inchI):
-    PARAMS = {'inchi':inchI}
+# Creamos la función get_cid_by_inchi
+def get_cid_by_inchi(inchi):
+    PARAMS = {'inchi':inchi}
     response=None
     try:
         response = requests.get(url = baseURL, params = PARAMS)
@@ -35,10 +35,10 @@ def getCidByInchI(inchI):
             print(f'API Resquest ERROR: {response}')
             return np.NA
 # Función para conseguir CID a partir de HMDBID        
-def getCidByHMDBId(HMDBId):
+def get_cid_by_hmdbid(hmdbid):
     response=None
     try:
-        response = requests.get(url = altURL.replace("{registryID}",HMDBId))
+        response = requests.get(url = altURL.replace("{registryID}",hmdbid))
         if(response.status_code==200):
             return response.json()["IdentifierList"]["CID"][0]
         else:
@@ -46,7 +46,7 @@ def getCidByHMDBId(HMDBId):
     except:
         if(response):
             print(f'API Resquest ERROR {response.status_code}')
-            response = requests.get(url = altURL.replace("{registryID}", HMDBId))
+            response = requests.get(url = altURL.replace("{registryID}", hmdbid))
             if(response.status_code==200):
                 return response.json()["IdentifierList"]["CID"][0]
             else:
@@ -56,19 +56,18 @@ def getCidByHMDBId(HMDBId):
             print(f'API Resquest ERROR: {response}')
             return np.NA
 # Comprobamos la existencia de valores NA o valores igual a cero
-def checkDataNA(CID,inchi, HMDBID):
-    if(np.isnan(CID)):
-        return getCidByInchI(inchi)
-    elif(CID==0):
-        print(CID)
-        return getCidByHMDBId(HMDBID)
+def check_data_na(cid,inchi, hmdbid):
+    if(np.isnan(cid)):
+        return get_cid_by_inchi(inchi)
+    elif(cid==0):
+        return get_cid_by_hmdbid(hmdbid)
     else:
-        return CID
+        return cid
 
 start_time = datetime.now()
 # Recorremos la columna inchi y realizamos a tanta peticiones a la api como valores hay en la columna
-df['cid'] = df.apply(lambda row:getCidByInchI(row['inchi']), axis = 1)
-df['cid'] = df.apply(lambda row:checkDataNA(row['cid'], row['inchi'], row['hmdb_id']), axis = 1)
+df['cid'] = df.apply(lambda row:get_cid_by_inchi(row['inchi']), axis = 1)
+df['cid'] = df.apply(lambda row:check_data_na(row['cid'], row['inchi'], row['hmdb_id']), axis = 1)
 df.to_csv("file_with_cids.csv", sep=';',index=False)
 end_time=datetime.now()
 print('Duration: {}'.format(end_time - start_time))
