@@ -16,18 +16,18 @@ cids_with_error=[]
 cids_without_bioactivity=[]
 baseURL="https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=json&query={%22select%22:%22*%22,%22collection%22:%22bioactivity%22,%22where%22:{%22ands%22:[{%22cid%22:%22{cid}%22}]},%22start%22:{start},%22limit%22:10000}"
 
-def get_bioactivities_by_cid(cid,start,limit,arr_results,arr_errors, arr_no_bioactivity):
+def get_bioactivities_by_cid(cid,start,limit, arr_results, arr_errors, arr_no_bioactivity):
     response=None
     total_count=0
     try:
         response = requests.get(url = baseURL.replace("{cid}",str(cid)).replace("{start}",str(start)))
         if(response.status_code==200):
-            total_count=response.json()["SDQOutputSet"][0]["total_count"]
+            total_count=response.json()["SDQOutputSet"][0]["totalCount"]
             start=start+limit
             if(total_count>0):
                 arr_results.append(pd.DataFrame(response.json()["SDQOutputSet"][0]["rows"]))
                 if(total_count>start):
-                    get_bioactivities_by_cid(cid,start,limit,arr_results, arr_errors, arr_no_bioactivity)
+                    get_bioactivities_by_cid(cid, start, limit, arr_results, arr_errors, arr_no_bioactivity)
             else:
                 arr_no_bioactivity.append(cid)
         else:
@@ -40,8 +40,8 @@ def get_bioactivities_by_cid(cid,start,limit,arr_results,arr_errors, arr_no_bioa
             response="Error while execution"
             print(f'API Resquest ERROR: {response}')
 
-def get_bioactivities(CIDs,start,limit,arr_results,arr_errors, arr_no_bioactivity):
-    for i in CIDs:
+def get_bioactivities(cids, start, limit, arr_results, arr_errors, arr_no_bioactivity):
+    for i in cids:
         get_bioactivities_by_cid(i, start, limit, arr_results, arr_errors, arr_no_bioactivity)
     results_to_csv(arr_results)
     results_filtered_to_csv(arr_results)
@@ -69,7 +69,7 @@ def results_filtered_to_dataframe(arr_results):
     return pd.concat(arr_results).dropna(subset="repacxn")
 
 start_time = datetime.now()
-get_bioactivities(df["cid"],1,1000,arr_bioactivity,cids_with_error,cids_without_bioactivity)
+get_bioactivities(df["cid"], 1, 1000, arr_bioactivity, cids_with_error, cids_without_bioactivity)
 df_bioactivity=results_to_dataframe(arr_bioactivity)
 df_bioactivity_filtered=results_filtered_to_dataframe(arr_bioactivity)
 df["bioactivity"]=df.apply(lambda row:check_bioactivity(row["cid"], pd.unique(df_bioactivity["cid"]), pd.unique(df_bioactivity_filtered["cid"])), axis = 1)
