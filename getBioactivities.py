@@ -44,6 +44,7 @@ def get_bioactivities(CIDs,start,limit,arr_results,arr_errors, arr_no_bioactivit
     for i in CIDs:
         get_bioactivities_by_cid(i, start, limit, arr_results, arr_errors, arr_no_bioactivity)
     results_to_csv(arr_results)
+    results_filtered_to_csv(arr_results)
     if(len(arr_errors)>0):
         arr_errors_copied=arr_errors
         arr_errors=[]
