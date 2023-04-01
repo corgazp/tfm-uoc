@@ -70,11 +70,27 @@ def results_to_dataframe(arr_results):
 def results_filtered_to_dataframe(arr_results):
     return pd.concat(arr_results).dropna(subset="repacxn")
 
+def check_activities_values(activity, acvalue):
+    match activity:
+        case "Inactive":
+            return "Inactive"
+        case "Inconclusive":
+            return "Inconclusive"
+        case _:
+            if(acvalue<10):
+                print(f'Active:{acvalue}')
+                return "Active"
+            else:
+                print(f'Inactive:{acvalue}')
+                return "Inactive"
+
 start_time = datetime.now()
 get_bioactivities(df["cid"], 1, 1000, arr_bioactivity, cids_with_error, cids_without_bioactivity)
 df_bioactivity=results_to_dataframe(arr_bioactivity)
 df_bioactivity_filtered=results_filtered_to_dataframe(arr_bioactivity)
 df["bioactivity"]=df.apply(lambda row:check_bioactivity(row["cid"], pd.unique(df_bioactivity["cid"]), pd.unique(df_bioactivity_filtered["cid"])), axis = 1)
 df.to_csv("gut_comps_cids_bioactivity.csv", sep=';',index=False)
+df_bioactivity_filtered["my_activity"]=df_bioactivity_filtered.apply(lambda row: check_activities_values(row["activity"], row["acvalue"]), axis=1)
+df_bioactivity_filtered.to_csv("bioactivities_by_cid_filtered_my_activity.csv", sep=';',index=False)
 end_time=datetime.now()
 print('Duration: {}'.format(end_time - start_time))
