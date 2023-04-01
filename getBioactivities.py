@@ -60,11 +60,13 @@ def check_bioactivity(cid, list_to_check, list_to_check_filtered):
 
 def results_to_csv(arr_results):
     pd.concat(arr_results).to_csv("bioactivities_by_cid.csv", sep=';',index=False)
+
 def results_filtered_to_csv(arr_results):
     pd.concat(arr_results).dropna(subset="repacxn").to_csv("bioactivities_by_cid_filtered.csv", sep=';',index=False)
 
 def results_to_dataframe(arr_results):
     return pd.concat(arr_results)
+
 def results_filtered_to_dataframe(arr_results):
     return pd.concat(arr_results).dropna(subset="repacxn")
 
