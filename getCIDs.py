@@ -21,7 +21,7 @@ def get_cid_by_inchi(inchi):
         if(response.status_code==200):
             return response.json()["IdentifierList"]["CID"][0]
         else:
-            return np.NA
+            return np.nan
     except:
         if(response):
             print(f'API Resquest ERROR {response.status_code}')
@@ -29,11 +29,11 @@ def get_cid_by_inchi(inchi):
             if(response.status_code==200):
                 return response.json()["IdentifierList"]["CID"][0]
             else:
-                return np.NA
+                return np.nan
         else:
             response="Error while execution"
             print(f'API Resquest ERROR: {response}')
-            return np.NA
+            return np.nan
 # Función para conseguir CID a partir de HMDBID        
 def get_cid_by_hmdbid(hmdbid):
     response=None
@@ -42,7 +42,7 @@ def get_cid_by_hmdbid(hmdbid):
         if(response.status_code==200):
             return response.json()["IdentifierList"]["CID"][0]
         else:
-            return np.NA
+            return np.nan
     except:
         if(response):
             print(f'API Resquest ERROR {response.status_code}')
@@ -50,11 +50,11 @@ def get_cid_by_hmdbid(hmdbid):
             if(response.status_code==200):
                 return response.json()["IdentifierList"]["CID"][0]
             else:
-                return np.NA
+                return np.nan
         else:
             response="Error while execution"
             print(f'API Resquest ERROR: {response}')
-            return np.NA
+            return np.nan
 # Comprobamos la existencia de valores NA o valores igual a cero
 def check_data_na(cid,inchi, hmdbid):
     if(np.isnan(cid)):
