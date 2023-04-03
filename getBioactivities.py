@@ -78,10 +78,8 @@ def check_activities_values(activity, acvalue):
             return "Inconclusive"
         case _:
             if(acvalue<10):
-                print(f'Active:{acvalue}')
                 return "Active"
             else:
-                print(f'Inactive:{acvalue}')
                 return "Inactive"
 
 start_time = datetime.now()
