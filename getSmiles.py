@@ -37,9 +37,16 @@ def check_data_na(SMILES, cid):
     else:
         return SMILES
 
+def generate_SEA_file(SMILES, CID, file):
+    file.write(f"{SMILES} {CID}\n")
+
 start_time = datetime.now()
 df["canonical_smiles"]=df.apply(lambda row:get_smiles_by_cid(row["cid"]),axis=1)
 df["canonical_smiles"]=df.apply(lambda row:check_data_na(row["canonical_smiles"], row["cid"]),axis=1)
 df.to_csv("file_with_smiles.csv", sep=';',index=False)
+file_SEA=open("input.txt","w")
+file_SEA.write("SMILES CID\n")
+df.apply(lambda row:generate_SEA_file(row["canonical_smiles"], row["cid"], file_SEA),axis=1)
+file_SEA.close()
 end_time=datetime.now()
 print('Duration: {}'.format(end_time - start_time))
