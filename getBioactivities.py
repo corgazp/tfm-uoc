@@ -5,7 +5,6 @@ __version__ = "1.0"
 # Usamos las librerias panda, requests y numpy
 import pandas as pd
 import requests
-import numpy as np
 from datetime import datetime
 # leemos el fichero y lo guardamos en la variable df
 df=pd.read_csv('file_with_cids.csv',sep=";")
