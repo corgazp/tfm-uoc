@@ -11,7 +11,7 @@ df=pd.read_csv('file_with_cids.csv',sep=";")
 arr_bioactivity=[]
 cids_with_error=[]
 cids_without_bioactivity=[]
-baseURL="https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=json&query={%22select%22:%22*%22,%22collection%22:%22bioactivity%22,%22where%22:{%22ands%22:[{%22cid%22:%22{cid}%22}]},%22start%22:{start},%22limit%22:10000}"
+baseURL="https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=json&query={%22select%22:%22*%22,%22collection%22:%22bioactivity%22,%22where%22:{%22ands%22:[{%22cid%22:%22{cid}%22}]},%22start%22:{start},%22limit%22:{limit}}"
 
 def get_bioactivities_by_cid(cid,start,limit, arr_results, arr_errors, arr_no_bioactivity):
     response=None
