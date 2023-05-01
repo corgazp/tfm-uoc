@@ -50,6 +50,6 @@ def results_to_csv(arr_results):
     pd.concat(arr_results).to_csv("bioactivities_by_cid.csv", sep=';',index=False)
 
 start_time = datetime.now()
-get_bioactivities(df["cid"], 1, 1000, arr_bioactivity, cids_with_error, cids_without_bioactivity)
+get_bioactivities(df["cid"], 1, 10000, arr_bioactivity, cids_with_error, cids_without_bioactivity)
 end_time=datetime.now()
 print('Duration: {}'.format(end_time - start_time))
