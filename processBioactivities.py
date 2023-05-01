@@ -66,5 +66,5 @@ df_bioactivity_filtered_my_activity.drop(df_bioactivity_filtered_my_activity[df_
 df_bioactivity_filtered_my_activity.apply(lambda row:filter_unique_values(row["cid"],row["protacxn"],row["my_activity"],dict_cids),axis=1)
 result_df=obtain_filtered_results(arr_of_results)
 result_df.to_csv('filtered_bioactivity_result.csv',sep=";",index=False)
-df_cids["bioactivity"]=df_cids.apply(lambda row:check_bioactivity(row["cid"], pd.unique(df_bioactivity["cid"]), pd.unique(df_bioactivity_filtered["cid"]),pd.unique(result_df["cid"])), axis = 1)
+df_cids["bioactivity"]=df_cids.apply(lambda row:check_bioactivity(row["cid"], pd.unique(df_bioactivity["cid"]), pd.unique(df_bioactivity_filtered["cid"]),pd.unique(result_df[result_df["my_activity"]=="Active"]["cid"])), axis = 1)
 df_cids.to_csv("gut_comps_cids_bioactivity.csv", sep=';',index=False)
