@@ -17,7 +17,7 @@ def get_bioactivities_by_cid(cid,start,limit, arr_results, arr_errors, arr_no_bi
     response=None
     total_count=0
     try:
-        response = requests.get(url = baseURL.replace("{cid}",str(cid)).replace("{start}",str(start)))
+        response = requests.get(url = baseURL.replace("{cid}",str(cid)).replace("{start}",str(start)).replace("{limit}",str(limit)))
         if(response.status_code==200):
             total_count=response.json()["SDQOutputSet"][0]["totalCount"]
             start=start+limit
