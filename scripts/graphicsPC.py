@@ -37,7 +37,7 @@ for i in range(len(pchpros)):
     var = pchpros[i]
     sz = 15
     bw = 0.8
-    ax = sns.violinplot(x= "set", y= var, data = df_full, bw = bw)
+    ax = sns.boxplot(x= "set", y= var, data = df_full, showfliers = False)
     #ax = sns.violinplot(x= "group", y= var, data = alldf_drugs, bw = 0.8)
     ax.set_xlabel("", fontsize = sz)
     ax.set_ylabel("", fontsize = sz)
@@ -45,19 +45,14 @@ for i in range(len(pchpros)):
     ax.tick_params(labelsize=10)
     plt.show()
     
-def df2sdf(fname, mblist, idlist, idfield, addid = True):
-    nmols = len(mblist)
-    f = open(fname,"w+")
-    for i in range(nmols):
-        if i > 0:
-            f.write("$$$$\n")
-        if addid is True:
-            f.write(f'\t{idlist[i]}\n{mblist[i][1:]}\n') 
-        else:
-            f.write(mblist[i])
-        f.write(f'{idfield}\n')
-        f.write(f'{idlist[i]}\n\n')
-    f.write("$$$$\n")
-    f.close()
-
-df2sdf("df_full.sdf", [Chem.MolToMolBlock(x) for x in df_full[df_full.rb<9].mol], df_full[df_full.rb<9].name.values.tolist(), 'full_dataset', addid = True)
+for i in range(len(pchpros)):
+    var = pchpros[i]
+    sz = 15
+    bw = 0.8
+    ax = sns.violinplot(x= "set", y= var, data = df_full, bw = bw)
+    #ax = sns.violinplot(x= "group", y= var, data = alldf, bw = 0.8)
+    ax.set_xlabel("", fontsize = sz)
+    ax.set_ylabel("", fontsize = sz)
+    ax.set_title(var.upper(), fontsize = sz*1.2)
+    ax.tick_params(labelsize=10)
+    plt.show()
