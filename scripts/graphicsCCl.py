@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-df=pd.read_csv('guts_ccl.csv', sep=";")
+df_guts=pd.read_csv('../data/guts.csv', sep=";")
+df_drugs=pd.read_csv('../data/drugs.csv', sep=";")
 comp_order = ['Organoheterocyclic compounds',
 'Glycerolipids',
 'Benzenoids',
@@ -21,11 +22,16 @@ comp_order = ['Organoheterocyclic compounds',
 'Saccharolipids',
 'Endocannabinoids']
 
-d={"ccl":df.ccl.value_counts().index.tolist(),"count":df.ccl.value_counts().tolist()}
-dat_count=pd.DataFrame(data=d)
+g={"ccl":df_guts.ccl.value_counts().index.tolist(),"count":df_guts.ccl.value_counts().tolist()}
+dat_count_guts=pd.DataFrame(data=g)
+dat_count_guts["set"]="Gut"
+d={"ccl":df_drugs.ccl.value_counts().index.tolist(),"count":df_drugs.ccl.value_counts().tolist()}
+dat_count_drugs=pd.DataFrame(data=d)
+dat_count_drugs["set"]="Drugbank"
+df_full=pd.concat([dat_count_guts,dat_count_drugs])
 ## Barplot de cuentas de compuestos por clase química
 fig = plt.figure(figsize=(16,5))  
-ax = sns.barplot(x = "ccl", y = "count", data = dat_count, orient = "v", order = comp_order)
+ax = sns.barplot(x = "ccl", y = "count", hue="set", data = df_full, orient = "v", order = comp_order)
 ax.tick_params(axis='x', rotation=90)
 delta = 130
 sz = 16
