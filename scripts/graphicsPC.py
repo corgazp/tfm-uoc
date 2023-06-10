@@ -33,26 +33,30 @@ df_guts["set"]=df_guts.ccl.apply(lambda x: "G (GL)" if x=="Glycerolipids" else "
 pchpros = ["tpsa","logp","rb","hbd","hba","mw","qed","nring","naring","fsp3"]
 
 df_full=pd.concat([df_drugs,df_guts])
+
+fig = plt.figure(figsize=(20,10))
+fig.subplots_adjust(hspace=0.4, wspace=0.2)
 for i in range(len(pchpros)):
     var = pchpros[i]
     sz = 15
-    bw = 0.8
-    ax = sns.boxplot(x= "set", y= var, data = df_full, showfliers = False)
-    #ax = sns.violinplot(x= "group", y= var, data = alldf_drugs, bw = 0.8)
+    ax = fig.add_subplot(2, 5, i+1)
+    sns.boxplot(x= "set", y= var, data = df_full, showfliers = False, ax=ax)
     ax.set_xlabel("", fontsize = sz)
     ax.set_ylabel("", fontsize = sz)
     ax.set_title(var.upper(), fontsize = sz*1.2)
     ax.tick_params(labelsize=10)
-    plt.show()
-    
+plt.show()
+
+fig = plt.figure(figsize=(20,10))
+fig.subplots_adjust(hspace=0.4, wspace=0.2)
 for i in range(len(pchpros)):
     var = pchpros[i]
     sz = 15
     bw = 0.8
-    ax = sns.violinplot(x= "set", y= var, data = df_full, bw = bw)
-    #ax = sns.violinplot(x= "group", y= var, data = alldf, bw = 0.8)
+    ax = fig.add_subplot(2, 5, i+1)
+    sns.violinplot(x= "set", y= var, data = df_full, bw = bw, ax=ax)
     ax.set_xlabel("", fontsize = sz)
     ax.set_ylabel("", fontsize = sz)
     ax.set_title(var.upper(), fontsize = sz*1.2)
     ax.tick_params(labelsize=10)
-    plt.show()
+plt.show()

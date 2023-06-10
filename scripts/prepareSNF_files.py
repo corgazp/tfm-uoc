@@ -39,7 +39,7 @@ def df2sdf(fname, mblist, idlist, idfield, addid = True):
         if i > 0:
             f.write("$$$$\n")
         if addid is True:
-            f.write(f'\t{idlist[i]}\n{mblist[i][1:]}\n') 
+            f.write(f'\t{idlist[i]}\n{mblist[i][1:]}') 
         else:
             f.write(mblist[i])
         f.write(f'{idfield}\n')
@@ -47,4 +47,4 @@ def df2sdf(fname, mblist, idlist, idfield, addid = True):
     f.write("$$$$\n")
     f.close()
 
-df2sdf("df_full.sdf", [Chem.MolToMolBlock(x) for x in df_full[df_full.rb<9].mol], df_full[df_full.rb<9].name.values.tolist(), 'full_dataset', addid = True)
+df2sdf("df_full.sdf", [Chem.MolToMolBlock(x) for x in df_full[df_full.rb<9].mol], df_full[df_full.rb<9].name.values.tolist(), '> <full_dataset >', addid = True)

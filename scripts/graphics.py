@@ -86,28 +86,3 @@ plt.show()
 #     plt.text(j, i, '{:0.0f}'.format(z), ha='center', va='center', fontsize = fs, color = col)
 # plt.show()
  
- 
-# # Violin plots y boxplots de propiedades fisicoquímicas
-# full['mol'] = full.molblock.apply(lambda x: fa.mb2mol(x))
-# full["tpsa"] = full.mol.apply(Descriptors.TPSA)
-# full["logp"] = full.mol.apply(Descriptors.MolLogP)
-# full["rb"] = full.mol.apply(Chem.Lipinski.NumRotatableBonds) 
-# full["hbd"] = full.mol.apply(Chem.Lipinski.NumHDonors)
-# full["hba"] = full.mol.apply(Chem.Lipinski.NumHAcceptors)
-# full["mw"] = full.mol.apply(Descriptors.ExactMolWt)
-# full["qed"] = full.mol.apply(Descriptors.qed)
-# full["nring"] = full.mol.apply(Chem.Lipinski.RingCount)
-# full["naring"] = full.mol.apply(Chem.Lipinski.NumAromaticRings)
-# full["fsp3"] = full.mol.apply(Chem.Lipinski.FractionCSP3)
-# pchpros = ["tpsa","logp","rb","hbd","hba","mw","qed","nring","naring","fsp3"]
-# for i in range(len(pchpros)):
-#     var = pchpros[i]
-#     sz = 15
-#     bw = 0.8
-#     ax = sns.violinplot(x= "set", y= var, data = full, bw = bw)
-#     #ax = sns.violinplot(x= "group", y= var, data = alldf, bw = 0.8)
-#     ax.set_xlabel("", fontsize = sz)
-#     ax.set_ylabel("", fontsize = sz)
-#     ax.set_title(var.upper(), fontsize = sz*1.2)
-#     ax.tick_params(labelsize=10)
-#     plt.show()

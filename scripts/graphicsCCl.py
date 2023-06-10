@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+import math
 df_guts=pd.read_csv('../data/guts.csv', sep=";")
 df_drugs=pd.read_csv('../data/drugs.csv', sep=";")
 comp_order = ['Organoheterocyclic compounds',
@@ -19,7 +20,6 @@ comp_order = ['Organoheterocyclic compounds',
 'Organosulfur compounds',
 'Hydrocarbons',
 'Sphingolipids',
-'Saccharolipids',
 'Endocannabinoids']
 
 g={"ccl":df_guts.ccl.value_counts().index.tolist(),"count":df_guts.ccl.value_counts().tolist()}
@@ -42,17 +42,17 @@ ax.set_yticklabels(ax.get_yticks(), size = sz*0.9)
 ax.set_xticklabels([x.get_text().capitalize() for x in ax.get_xticklabels()], size = sz*0.9)
 ax.tick_params(axis='x', rotation=90)
 plt.legend(loc = "upper right", fontsize=sz)
-plt.margins(y = 0.15, x = 0.01)
+plt.margins(y = 0.15, x = 0.025)
 for p in ax.patches:
   # get the height of each bar
   height = p.get_height()
   # adding text to each bar
   ax.text(x = p.get_x()+(p.get_width()/2), # x-coordinate position of data label, padded to be in the middle of the bar
-  y = height + delta, # y-coordinate position of data label, padded 100 above bar
-  s = "{:.0f}".format(height), # data label, formatted to ignore decimals
+  y = 10 + delta  if math.isnan(height) else  height + delta, # y-coordinate position of data label, padded 100 above bar
+  s ="{:.0f}".format(0) if math.isnan(height) else "{:.0f}".format(height), # data lbel, formatted to ignore decimals
   fontsize = sz*0.65,
   ha = "center",
-  rotation = 90) # sets horizonta
+  rotation = 45) # angle of label
 plt.show()  
  
 # ## Heatmap de matriz de interacciones por clase química y clase de diana

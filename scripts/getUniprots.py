@@ -8,21 +8,37 @@ import requests
 from datetime import datetime
 import numpy as np
 baseURL="https://pubchem.ncbi.nlm.nih.gov/assay/pcget.cgi?task=protein_similarseq&protacxn={protacxn}&start={start}&limit=10000&infmt=json&outfmt=json"
-arr_protacxn_active=[]
-arr_protacxn_inactive=[]
-protacxns_with_error_active=[]
-protacxns_with_error_inactive=[]
-protacxn_without_uniprot_id_active=[]
-protacxn_without_uniprot_id_inactive=[]
-df=pd.read_csv('filtered_bioactivity_result.csv', sep=";")
-df_with_underscore=df[df["protacxn"].str.contains("_")]
-df_with_underscore_active=df_with_underscore[df_with_underscore["my_activity"]=="Active"]
-df_with_underscore_inactive=df_with_underscore[df_with_underscore["my_activity"]=="Inactive"]
-df_len_upper_six=df[df["protacxn"].str.len()>6]
-df_len_upper_six_active=df_len_upper_six[df_len_upper_six["my_activity"]=="Active"]
-df_len_upper_six_inactive=df_len_upper_six[df_len_upper_six["my_activity"]=="Inactive"]
-df_active_no_uniprot_id=pd.concat([df_len_upper_six_active,df_with_underscore_active]).drop_duplicates()
-df_inactive_no_uniprot_id=pd.concat([df_len_upper_six_inactive,df_with_underscore_inactive]).drop_duplicates()
+arr_protacxn_active_drugs=[]
+arr_protacxn_inactive_drugs=[]
+protacxns_with_error_active_drugs=[]
+protacxns_with_error_inactive_drugs=[]
+protacxn_without_uniprot_id_active_drugs=[]
+protacxn_without_uniprot_id_inactive_drugs=[]
+df_drugs=pd.read_csv('../results/bioactivity/filtered_bioactivity_result_drugs.csv', sep=";")
+df_drugs_with_underscore=df_drugs[df_drugs["protacxn"].str.contains("_")]
+df_drugs_with_underscore_active=df_drugs_with_underscore[df_drugs_with_underscore["my_activity"]=="Active"]
+df_drugs_with_underscore_inactive=df_drugs_with_underscore[df_drugs_with_underscore["my_activity"]=="Inactive"]
+df_drugs_len_upper_six=df_drugs[df_drugs["protacxn"].str.len()>6]
+df_drugs_len_upper_six_active=df_drugs_len_upper_six[df_drugs_len_upper_six["my_activity"]=="Active"]
+df_drugs_len_upper_six_inactive=df_drugs_len_upper_six[df_drugs_len_upper_six["my_activity"]=="Inactive"]
+df_drugs_active_no_uniprot_id=pd.concat([df_drugs_len_upper_six_active,df_drugs_with_underscore_active]).drop_duplicates()
+df_drugs_inactive_no_uniprot_id=pd.concat([df_drugs_len_upper_six_inactive,df_drugs_with_underscore_inactive]).drop_duplicates()
+
+arr_protacxn_active_guts=[]
+arr_protacxn_inactive_guts=[]
+protacxns_with_error_active_guts=[]
+protacxns_with_error_inactive_guts=[]
+protacxn_without_uniprot_id_active_guts=[]
+protacxn_without_uniprot_id_inactive_guts=[]
+df_guts=pd.read_csv('../results/bioactivity/filtered_bioactivity_result_guts.csv', sep=";")
+df_guts_with_underscore=df_guts[df_guts["protacxn"].str.contains("_")]
+df_guts_with_underscore_active=df_guts_with_underscore[df_guts_with_underscore["my_activity"]=="Active"]
+df_guts_with_underscore_inactive=df_guts_with_underscore[df_guts_with_underscore["my_activity"]=="Inactive"]
+df_guts_len_upper_six=df_guts[df_guts["protacxn"].str.len()>6]
+df_guts_len_upper_six_active=df_guts_len_upper_six[df_guts_len_upper_six["my_activity"]=="Active"]
+df_guts_len_upper_six_inactive=df_guts_len_upper_six[df_guts_len_upper_six["my_activity"]=="Inactive"]
+df_guts_active_no_uniprot_id=pd.concat([df_guts_len_upper_six_active,df_guts_with_underscore_active]).drop_duplicates()
+df_guts_inactive_no_uniprot_id=pd.concat([df_guts_len_upper_six_inactive,df_drugs_with_underscore_inactive]).drop_duplicates()
 def get_uniprot_id_by_protacxn(protacxn, start, limit, arr_results, arr_errors, arr_no_uniprot):
     response=None
     total_count=0
@@ -62,13 +78,23 @@ def get_unitprots(protacxns, start, limit, arr_results, arr_errors, arr_no_unipr
         get_unitprots(arr_errors_copied, start, limit, arr_results, arr_errors, arr_no_uniprot)
 
 def results_to_csv(arr_results, filename):
-    pd.concat(arr_results).to_csv(f'{filename}.csv', sep=';',index=False)
+    result=pd.concat(arr_results)
+    result[result.ident>=99].to_csv(f'{filename}.csv', sep=';',index=False)
 
 start_time = datetime.now()
-get_unitprots(df_active_no_uniprot_id["protacxn"], 1, 10000, arr_protacxn_active, protacxns_with_error_active, protacxn_without_uniprot_id_active, 'uniprots_by_protacxn_active')
+get_unitprots(df_drugs_active_no_uniprot_id["protacxn"], 1, 10000, arr_protacxn_active_drugs, protacxns_with_error_active_drugs, protacxn_without_uniprot_id_active_drugs, '../results/bioactivity/uniprots_by_protacxn_active_drugs')
 end_time=datetime.now()
-print('Duration for Active: {}'.format(end_time - start_time))
+print('Duration for Active drugs: {}'.format(end_time - start_time))
 start_time = datetime.now()
-get_unitprots(df_inactive_no_uniprot_id["protacxn"], 1, 10000, arr_protacxn_inactive, protacxns_with_error_inactive, protacxn_without_uniprot_id_inactive, 'uniprots_by_protacxn_inactive')
+get_unitprots(df_drugs_inactive_no_uniprot_id["protacxn"], 1, 10000, arr_protacxn_inactive_drugs, protacxns_with_error_inactive_drugs, protacxn_without_uniprot_id_inactive_drugs, '../results/bioactivity/uniprots_by_protacxn_inactive_drugs')
 end_time=datetime.now()
-print('Duration for Inactive: {}'.format(end_time - start_time))
+print('Duration for Inactive drugs: {}'.format(end_time - start_time))
+
+start_time = datetime.now()
+get_unitprots(df_guts_active_no_uniprot_id["protacxn"], 1, 10000, arr_protacxn_active_guts, protacxns_with_error_active_guts, protacxn_without_uniprot_id_active_guts, '../results/bioactivity/uniprots_by_protacxn_active_guts')
+end_time=datetime.now()
+print('Duration for Active guts: {}'.format(end_time - start_time))
+start_time = datetime.now()
+get_unitprots(df_guts_inactive_no_uniprot_id["protacxn"], 1, 10000, arr_protacxn_inactive_guts, protacxns_with_error_inactive_guts, protacxn_without_uniprot_id_inactive_guts, '../results/bioactivity/uniprots_by_protacxn_inactive_guts')
+end_time=datetime.now()
+print('Duration for Inactive guts: {}'.format(end_time - start_time))

@@ -6,6 +6,7 @@ __version__ = "1.0"
 import pandas as pd
 import requests
 from datetime import datetime
+import os
 # leemos el fichero y lo guardamos en la variable df_guts
 df_guts=pd.read_csv('../results/guts_cids.csv',sep=";", encoding= 'unicode_escape')
 df_drugs=pd.read_csv('../results/drugs_cids.csv',sep=";", encoding= 'unicode_escape')
@@ -45,7 +46,12 @@ def get_bioactivities(cids, start, limit, arr_results, arr_errors, arr_no_bioact
         get_bioactivities(arr_errors_copied, start, limit, arr_results, arr_errors, arr_no_bioactivity)
 
 def results_to_csv(arr_results, filename):
-    pd.concat(arr_results).to_csv(f'../results/{filename}.csv', sep=';',index=False)
+    path = "../results/bioactivity"
+    isExist = os.path.exists(path)
+    if not isExist:
+       os.makedirs(path)
+    print("Directory results has been created!")
+    pd.concat(arr_results).to_csv(f'../results/bioactivity/{filename}.csv', sep=';',index=False)
 
 start_time = datetime.now()
 arr_bioactivity_guts=[]
