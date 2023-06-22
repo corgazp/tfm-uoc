@@ -14,7 +14,7 @@ df_bioactivity_filtered_drugs.dropna(subset="repacxn", inplace=True)
 df_bioactivity_filtered_my_activity_guts=df_bioactivity_filtered_guts.copy()
 df_bioactivity_filtered_my_activity_drugs=df_bioactivity_filtered_drugs.copy()
 df_cids_guts=pd.read_csv('../results/guts_cids.csv', sep=";")
-df_cids_drugs=pd.read_csv('../results/guts_cids.csv', sep=";")
+df_cids_drugs=pd.read_csv('../results/drugs_cids.csv', sep=";", encoding='windows-1252')
 dict_cids_guts={}
 dict_cids_drugs={}
 arr_of_results_guts=[]
@@ -34,9 +34,9 @@ def check_activities_values(activity, acvalue):
                 return "Inactive"
 
 def check_bioactivity(cid, list_to_check, list_to_check_filtered_by_repacxn, list_to_check_full_filtered):
-    if(cid in list_to_check and cid in list_to_check_full_filtered):
+    if(int(cid) in list_to_check and int(cid) in list_to_check_full_filtered):
         return "yes"
-    elif(cid in list_to_check and cid not in list_to_check_filtered_by_repacxn):
+    elif(int(cid) in list_to_check and int(cid) not in list_to_check_filtered_by_repacxn):
         return "no repacxn"
     else:
         return "no"
