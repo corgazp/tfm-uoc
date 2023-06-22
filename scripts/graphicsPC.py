@@ -33,31 +33,30 @@ df_guts["set"]=df_guts.ccl.apply(lambda x: "G (GL)" if x=="Glycerolipids" else "
 pchpros = ["tpsa","logp","rb","hbd","hba","mw","qed","nring","naring","fsp3"]
 
 df_full=pd.concat([df_drugs,df_guts])
+
+fig = plt.figure(figsize=(20,10))
+fig.subplots_adjust(hspace=0.4, wspace=0.2)
 for i in range(len(pchpros)):
     var = pchpros[i]
     sz = 15
-    bw = 0.8
-    ax = sns.violinplot(x= "set", y= var, data = df_full, bw = bw)
-    #ax = sns.violinplot(x= "group", y= var, data = alldf_drugs, bw = 0.8)
+    ax = fig.add_subplot(2, 5, i+1)
+    sns.boxplot(x= "set", y= var, data = df_full, showfliers = False, ax=ax)
     ax.set_xlabel("", fontsize = sz)
     ax.set_ylabel("", fontsize = sz)
     ax.set_title(var.upper(), fontsize = sz*1.2)
     ax.tick_params(labelsize=10)
-    plt.show()
-    
-def df2sdf(fname, mblist, idlist, idfield, addid = True):
-    nmols = len(mblist)
-    f = open(fname,"w+")
-    for i in range(nmols):
-        if i > 0:
-            f.write("$$$$\n")
-        if addid is True:
-            f.write(f'\t{idlist[i]}\n{mblist[i][1:]}\n') 
-        else:
-            f.write(mblist[i])
-        f.write(f'{idfield}\n')
-        f.write(f'{idlist[i]}\n\n')
-    f.write("$$$$\n")
-    f.close()
+plt.show()
 
-df2sdf("df_full.sdf", [Chem.MolToMolBlock(x) for x in df_full[df_full.rb<9].mol], df_full[df_full.rb<9].name.values.tolist(), 'full_dataset', addid = True)
+fig = plt.figure(figsize=(20,10))
+fig.subplots_adjust(hspace=0.4, wspace=0.2)
+for i in range(len(pchpros)):
+    var = pchpros[i]
+    sz = 15
+    bw = 0.8
+    ax = fig.add_subplot(2, 5, i+1)
+    sns.violinplot(x= "set", y= var, data = df_full, bw = bw, ax=ax)
+    ax.set_xlabel("", fontsize = sz)
+    ax.set_ylabel("", fontsize = sz)
+    ax.set_title(var.upper(), fontsize = sz*1.2)
+    ax.tick_params(labelsize=10)
+plt.show()
